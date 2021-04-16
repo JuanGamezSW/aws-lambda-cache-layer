@@ -1,0 +1,5 @@
+bin/*
+.idea/*
+go.sum
+run.sh
+SAM/.aws-sam/*
