@@ -35,16 +35,14 @@ var cacheConfig = CacheConfig{}
 func InitCacheExtensions() {
 	// Read the cache config file
 	data := LoadConfigFile()
-	println(plugins.PrintPrefix, "data readed: "+data)
 	// Unmarshal the configuration to struct
 	err := yaml.Unmarshal([]byte(data), &cacheConfig)
 	if err != nil {
-		println(plugins.PrintPrefix, "Error: "+err.Error())
+		println(plugins.PrintPrefix, "Error: ", err.Error())
 	}
 
 	// Initialize Cache
 	InitCache()
-	println(plugins.PrintPrefix, "Cache successfully loaded")
 }
 
 // Initialize individual cache

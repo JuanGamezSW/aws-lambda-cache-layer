@@ -46,7 +46,7 @@ func startHTTPServer(port string) {
 	println(plugins.PrintPrefix, "Starting Httpserver on port ", port)
 	err := http.ListenAndServe(":"+port, router)
 	if err != nil {
-		println(plugins.PrintPrefix, "Error servirng: "+err.Error())
+		println(plugins.PrintPrefix, "Error serving: "+err.Error())
 		panic(err)
 	}
 }

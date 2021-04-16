@@ -39,8 +39,6 @@ func InitSecret(secrets []SecretConfiguration, initializeCache bool) {
 						Region:    GetRegion(config.Region),
 					}
 				}
-			} else {
-				println(PrintPrefix, secret+" already exists so skipping it")
 			}
 		}
 	}

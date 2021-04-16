@@ -29,12 +29,11 @@ func main() {
 		println(plugins.PrintPrefix, "Exiting")
 	}()
 	println(plugins.PrintPrefix, "Begin register...")
-	res, err := extensionClient.Register(ctx, plugins.ExtensionName)
+	_, err := extensionClient.Register(ctx, plugins.ExtensionName)
 	if err != nil {
 		println(plugins.PrintPrefix, "Error registering: "+err.Error())
 		panic(err)
 	}
-	println(plugins.PrintPrefix, "Register response:", plugins.PrettyPrint(res))
 
 	// Initialize all the cache plugins
 	extension.InitCacheExtensions()
@@ -53,7 +52,6 @@ func processEvents(ctx context.Context) {
 		case <-ctx.Done():
 			return
 		default:
-			println(plugins.PrintPrefix, "Waiting for event...")
 			res, err := extensionClient.NextEvent(ctx)
 			if err != nil {
 				println(plugins.PrintPrefix, "Error:", err)
@@ -63,8 +61,6 @@ func processEvents(ctx context.Context) {
 
 			// Exit if we receive a SHUTDOWN event
 			if res.EventType == extension.Shutdown {
-				println(plugins.PrintPrefix, "Received SHUTDOWN event")
-				println(plugins.PrintPrefix, "Exiting")
 				return
 			}
 		}
