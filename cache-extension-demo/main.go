@@ -18,6 +18,37 @@ var (
 )
 
 func main() {
+	if len(os.Args) > 1 && os.Args[1] == "debug" {
+		mainDebug()
+	} else {
+		mainLambda()
+	}
+}
+
+func mainDebug() {
+	ctx, cancel := context.WithCancel(context.Background())
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGTERM, syscall.SIGINT)
+	go func() {
+		s := <-sigs
+		cancel()
+		println(plugins.PrintPrefix, "Received", s)
+		println(plugins.PrintPrefix, "Exiting")
+	}()
+	println(plugins.PrintPrefix, "Begin register...")
+
+	// Initialize all the cache plugins
+	extension.InitCacheExtensions()
+
+	// Start HTTP server
+	ipc.Start("4000")
+
+	// Will block until shutdown event is received or cancelled via the context.
+	processEventsDebug(ctx)
+}
+
+func mainLambda() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	sigs := make(chan os.Signal, 1)
@@ -63,6 +94,17 @@ func processEvents(ctx context.Context) {
 			if res.EventType == extension.Shutdown {
 				return
 			}
+		}
+	}
+}
+
+// Method to process events debug mode
+func processEventsDebug(ctx context.Context) {
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
 		}
 	}
 }

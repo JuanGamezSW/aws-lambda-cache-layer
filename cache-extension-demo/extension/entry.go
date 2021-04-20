@@ -34,15 +34,19 @@ var cacheConfig = CacheConfig{}
 // Initialize cache and start the background process to refresh cache
 func InitCacheExtensions() {
 	// Read the cache config file
-	data := LoadConfigFile()
-	// Unmarshal the configuration to struct
-	err := yaml.Unmarshal([]byte(data), &cacheConfig)
+	data, err := LoadConfigFile()
 	if err != nil {
-		println(plugins.PrintPrefix, "Error: ", err.Error())
-	}
+		println(plugins.PrintPrefix, "Error reading config.yaml, skipping initialization.")
+	} else {
+		// Unmarshal the configuration to struct
+		err := yaml.Unmarshal([]byte(data), &cacheConfig)
+		if err != nil {
+			println(plugins.PrintPrefix, "Error: ", err.Error())
+		}
 
-	// Initialize Cache
-	InitCache()
+		// Initialize Cache
+		InitCache()
+	}
 }
 
 // Initialize individual cache
@@ -94,12 +98,12 @@ func PutCache(cacheType string, name string, value string) string {
 }
 
 // Load the config file
-func LoadConfigFile() string {
+func LoadConfigFile() (string, error) {
 	data, err := ioutil.ReadFile(FileName)
 	if err != nil {
 		println(plugins.PrintPrefix, "Error while reading config file")
-		panic(err)
+		return "", err
 	}
 
-	return string(data)
+	return string(data), nil
 }
